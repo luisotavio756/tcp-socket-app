@@ -1,60 +1,78 @@
-'use strict'
+const net = require('net');
 
-const wstcpServer = require('./lib/server.js');
+const server = net.createServer();
 
-let server = wstcpServer({
-  port: 8000,
-  tcpPort: 10000,
-  remote: true
-});
-
-let temperaturaDoAr = 0;
-let umidade = 0;
-let oxigenacao = 0;
-let batimentos = 0;
-
-let statusInterval = setInterval(() => {
-  emitStatus();
-}, 1000);
-
-function emitStatus() {
-  const details = {
-    temperaturaDoAr,
-    umidade,
-    oxigenacao,
-    batimentos
-  };
-
-  server.emit('status', details);
+let statusInterval = null;
+let details = {
+  temperaturaDoAr: 0,
+  umidade: 0,
+  oxigenacao: 0,
+  batimentos: 0,
 }
 
 function clearStatusInterval() {
-  clearInterval(statusInterval);
+  statusInterval && clearInterval(statusInterval);
 }
 
-server.on('connection', (t) => console.log('Server: New client connected!'));
+function setStatusInterval(socket) {
+  if (statusInterval) {
+    clearInterval(statusInterval);
+  }
 
-server.on('aquecer', () => {
-  temperaturaDoAr += 1;
+  statusInterval = setInterval(() => {
+    // Está passando como JSON stringify aqui, mas precisa ser
+    // um buffer. Deem uma olhada como passar aqui e receber no client
+    socket.write(JSON.stringify(details));
+  }, 1000);
+}
 
-  emitStatus();
+server.on('connection', (socket) => {
+  const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`;
+  console.log('New client is connected %s', remoteAddress);
+
+  socket.on('data', (data) => {
+    const parsedData = JSON.parse(data);
+
+    if (parsedData?.action === 'aquecer') {
+      details = {
+        ...details,
+        temperaturaDoAr: details.temperaturaDoAr + 1
+      };
+    } else if (parsedData?.action === 'umidificar') {
+      details = {
+        ...details,
+        umidade: details.umidade + 1
+      };
+    } else if (parsedData?.action === 'circularAr') {
+      details = {
+        ...details,
+        oxigenacao: details.oxigenacao + 1
+      };
+    } else {
+      console.log('Action not recognized..');
+    }
+
+    socket.write(JSON.stringify(details));
+    setStatusInterval(socket);
+  });
+
+  socket.once('close', () => {
+    console.log('Connecting from %s closed', remoteAddress);
+  });
+
+  socket.on('error', (err) => {
+    console.log('Connection %s error: %s', remoteAddress, err.message);
+  });
+
+  if (!statusInterval) {
+    setStatusInterval(socket)
+  }
+});
+
+server.on('close', () => {
   clearStatusInterval();
 });
-server.on('umidificar', () => {
-  umidade += 1;
 
-  emitStatus();
-  clearStatusInterval();
-});
-server.on('circularAr', () => {
-  temperaturaDoAr -= 1;
-
-  emitStatus();
-  clearStatusInterval();
-});
-
-server.on('error', err => {
-  console.error(`server: error: ${err.message}`);
-
-  clearStatusInterval();
+server.listen(9000, () => {
+  console.log("Server started on port 9000");
 });
