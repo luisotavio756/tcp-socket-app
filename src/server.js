@@ -20,7 +20,7 @@ function setStatusInterval(socket) {
   }
 
   statusInterval = setInterval(() => {
-    // Está passando como JSON stringify aqui, mas precisa ser
+    // TODO: Está passando como JSON stringify aqui, mas precisa ser
     // um buffer. Deem uma olhada como passar aqui e receber no client
     socket.write(JSON.stringify(details));
   }, 1000);

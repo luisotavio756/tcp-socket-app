@@ -44,7 +44,7 @@ function menu() {
       break;
   }
 }
-// Essa parte deve ser implementada em um outro client, que rodará em um processo
+// TODO: Essa parte deve ser implementada em um outro client, que rodará em um processo
 // separado apenas para mostrar essas informações, e esse client aqui somente para
 // realizar as ações
 client.on('data', function(chunk) {
