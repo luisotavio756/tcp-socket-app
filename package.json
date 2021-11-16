@@ -8,9 +8,6 @@
     "client": "node src/client.js"
   },
   "dependencies": {
-    "lodash": "^4.17.21",
-    "mux-demux": "^3.7.9",
-    "readline-sync": "^1.4.10",
-    "websocket-stream": "^5.5.2"
+    "readline-sync": "^1.4.10"
   }
 }
