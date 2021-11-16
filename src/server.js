@@ -1,6 +1,6 @@
 const net = require('net');
 
-const server = net.createServer();
+const server = net.createServer({ allowHalfOpen: true });
 
 let statusInterval = null;
 let details = {
