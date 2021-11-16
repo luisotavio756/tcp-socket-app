@@ -1,0 +1,15 @@
+{
+  "name": "socket-work",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "server": "node src/server.js",
+    "client": "node src/client.js"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "mux-demux": "^3.7.9",
+    "websocket-stream": "^5.5.2"
+  }
+}
