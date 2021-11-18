@@ -3,14 +3,8 @@ const net = require('net');
 const server = net.createServer({ allowHalfOpen: true });
 
 let statusInterval = null;
-let details = {
-  temperaturaDoAr: 0,
-  umidade: 0,
-  oxigenacao: 0,
-  batimentos: 0,
-};
 
-let lastestSensorLogs = [];// array do tipo {sensorID: number, message: string, remoteAddress: string}
+let lastestSensorLogs = [];// array do tipo {sensorID: number, message: string}
 
 function clearStatusInterval() {
   statusInterval && clearInterval(statusInterval);
@@ -54,25 +48,7 @@ server.on('connection', (socket) => {
 
       addSensor(socket, parsedData);
 
-      if (parsedData?.action === 'aquecer') {
-        details = {
-          ...details,
-          temperaturaDoAr: details.temperaturaDoAr + 1
-        };
-      } else if (parsedData?.action === 'umidificar') {
-        details = {
-          ...details,
-          umidade: details.umidade + 1
-        };
-      } else if (parsedData?.action === 'circularAr') {
-        details = {
-          ...details,
-          oxigenacao: details.oxigenacao + 1
-        };
-      } else {
-        //mostrando mensagens dos sensores
-        console.log(parsedData);
-      }
+      console.log(parsedData);
     }else{
       console.log(data.toString());
     }

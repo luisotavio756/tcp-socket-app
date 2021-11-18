@@ -6,9 +6,9 @@
   "scripts": {
     "server": "node src/server.js",
     "client": "node src/client.js",
-    "sensor-temperatura": "node src/sensor-temperatura.js",
-    "sensor-umidade": "node src/sensor-umidade.js",
-    "sensor-co2": "node src/sensor-co2.js"
+    "sensor-temperatura": "node src/sensors/sensor-temperatura.js",
+    "sensor-umidade": "node src/sensors/sensor-umidade.js",
+    "sensor-co2": "node src/sensors/sensor-co2.js"
   },
   "dependencies": {
     "readline-sync": "^1.4.10"

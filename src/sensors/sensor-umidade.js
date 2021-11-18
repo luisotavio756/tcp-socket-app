@@ -5,10 +5,10 @@ const sensorId = Date.now();
 const options = {
   host: "localhost",
   port: 9000,
-  sensorId: sensorId
+  localAddress: "127.0.0.2"
 }
 
-let details = {sensorId: sensorId, temperatura: 30};
+let details = {sensorId: sensorId, umidade:1};
 
 const client = new net.Socket();
 
@@ -34,19 +34,13 @@ function setStatusInterval(socket) {
   }, 1000);
 }
 
-client.on("data", function(chunk){
-  console.log(JSON.parse(chunk));
-
-  client.end();
-})
-
 // o sensor se conecta ao gerenciador
 client.connect(options, () => {
   console.log(`Sensor '${options.sensorId}' connected to server successfully`);
   //Sensor faz sua identificação para o servidor
   client.write("HEAD / LCM/1.0\r\n");
   client.write(`Host: ${options.host}\r\n`);
-  client.write(`User-Agent: Sensor Client - Temperatura Interna\r\n`);
+  client.write(`User-Agent: Sensor Client - Umidade do Solo\r\n`);
   client.write(`SensorId: ${details.sensorId}`);
 
   // inicializa o envio de mensagens para o servidor a cada 1 segundo
