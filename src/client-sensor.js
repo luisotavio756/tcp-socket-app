@@ -30,7 +30,7 @@ function setStatusInterval(socket) {
 
   statusInterval = setInterval(() => {
     const buffer = Buffer.from(JSON.stringify(details));
-    client.write(buffer);
+    socket.write(buffer);
   }, 1000);
 }
 
