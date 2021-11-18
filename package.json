@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "server": "node src/server.js",
-    "client": "node src/client.js"
+    "client": "node src/client.js",
+    "sensor": "node src/client-sensor.js"
   },
   "dependencies": {
     "readline-sync": "^1.4.10"
