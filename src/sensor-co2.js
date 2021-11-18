@@ -8,7 +8,7 @@ const options = {
   sensorId: sensorId
 }
 
-let details = {sensorId: sensorId, temperatura: 30, umidade:1, nivelCO2: 3};
+let details = {sensorId: sensorId, nivelCO2: 3};
 
 const client = new net.Socket();
 
@@ -46,7 +46,7 @@ client.connect(options, () => {
   //Sensor faz sua identificação para o servidor
   client.write("HEAD / LCM/1.0\r\n");
   client.write(`Host: ${options.host}\r\n`);
-  client.write(`User-Agent: Sensor Client ${details.sensorId}\r\n`);
+  client.write(`User-Agent: Sensor Client - Nível de CO2\r\n`);
   client.write(`SensorId: ${details.sensorId}`);
 
   // inicializa o envio de mensagens para o servidor a cada 1 segundo
