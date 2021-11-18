@@ -46,8 +46,8 @@ client.connect(options, () => {
   //Sensor faz sua identificação para o servidor
   client.write("HEAD / LCM/1.0\r\n");
   client.write(`Host: ${options.host}\r\n`);
-  client.write(`User-Agent: Sensor Client\r\n`);
-  client.write(`SessionId: ${details.sensorId}`);
+  client.write(`User-Agent: Sensor Client ${details.sensorId}\r\n`);
+  client.write(`SensorId: ${details.sensorId}`);
 
   // inicializa o envio de mensagens para o servidor a cada 1 segundo
   setStatusInterval(client);
