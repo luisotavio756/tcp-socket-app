@@ -9,7 +9,8 @@ function addSensor(socket, data){
   const newSensor = {
     sensorId: data.sensorId,
     remoteAddress: socket.remoteAddress,
-    message: JSON.stringify(data)
+    message: JSON.stringify(data),
+    socket
   };
 
   //remove o sensor caso ele exista
@@ -17,7 +18,6 @@ function addSensor(socket, data){
   // adicina o sensor novamente, só que com a ultima mensagem enviada.
   lastestSensorLogs.push(newSensor);
 }
-
 
 server.on('connection', (socket) => {
   const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`;

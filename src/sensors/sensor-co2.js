@@ -8,7 +8,11 @@ const options = {
   localAddress: "127.0.0.2"
 }
 
-let details = {sensorId: sensorId, nivelCO2: 3};
+let details = {
+  sensorId: sensorId,
+  aquecedorOn: true,
+  nivelCO2: 0
+};
 
 const client = new net.Socket();
 
@@ -23,12 +27,20 @@ function clearStatusInterval(){
   statusInterval && clearInterval(statusInterval);
 }
 
+function updateSensor() {
+  if (details.aquecedorOn) {
+    details.nivelCO2 = details.nivelCO2 + 1;
+  }
+}
+
 function setStatusInterval(socket) {
   if (statusInterval) {
     clearInterval(statusInterval);
   }
 
   statusInterval = setInterval(() => {
+    updateSensor();
+
     const buffer = Buffer.from(JSON.stringify(details));
     socket.write(buffer);
   }, 1000);
@@ -45,6 +57,10 @@ client.connect(options, () => {
 
   // inicializa o envio de mensagens para o servidor a cada 1 segundo
   setStatusInterval(client);
+
 })
 
-client.on("close", ()=>{disconnect(); clearStatusInterval();})
+client.on("close", () => {
+  disconnect();
+  clearStatusInterval();
+});

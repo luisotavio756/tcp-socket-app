@@ -1,4 +1,4 @@
-export function isJSON(text) {
+function isJSON(text) {
   if (
     /^[\],:{}\s]*$/.test(
       text
@@ -15,3 +15,7 @@ export function isJSON(text) {
     return false;
   }
 }
+
+module.exports = {
+  isJSON
+};
