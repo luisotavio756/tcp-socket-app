@@ -1,41 +1,23 @@
 const net = require('net');
+const { isJSON } = require('./utils');
 
 const server = net.createServer({ allowHalfOpen: true });
 
-let statusInterval = null;
-
 let lastestSensorLogs = [];// array do tipo {sensorID: number, message: string}
 
-function clearStatusInterval() {
-  statusInterval && clearInterval(statusInterval);
-}
-
 function addSensor(socket, data){
-  const newSensor= {sensorId: data.sensorId, remoteAddress: socket.remoteAddress, message: JSON.stringify(data) };
+  const newSensor = {
+    sensorId: data.sensorId,
+    remoteAddress: socket.remoteAddress,
+    message: JSON.stringify(data)
+  };
+
   //remove o sensor caso ele exista
   lastestSensorLogs = lastestSensorLogs.filter(sensor => sensor.sensorId !== data.sensorId);
   // adicina o sensor novamente, só que com a ultima mensagem enviada.
   lastestSensorLogs.push(newSensor);
 }
 
-// verifica se é um JSON válido
-function isJSON(text) {
-  if (
-    /^[\],:{}\s]*$/.test(
-      text
-        .replace(/\\["\\\/bfnrtu]/g, '@')
-        .replace(
-          /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
-          ']'
-        )
-        .replace(/(?:^|:|,)(?:\s*\[)+/g, '')
-    )
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 server.on('connection', (socket) => {
   const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`;
@@ -65,7 +47,7 @@ server.on('connection', (socket) => {
 });
 
 server.on('close', () => {
-  clearStatusInterval();
+  console.log('Server closed!');
 });
 
 server.listen(9000, () => {
