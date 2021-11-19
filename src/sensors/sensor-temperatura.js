@@ -51,7 +51,7 @@ client.connect(options, () => {
  * @param heaterStatus é do tipo boolean, possíveis valores true ou false
  */
  client.on("data", (heaterStatus)=>{
-  if(heaterStatus){ // se o aquecedor tiver ligado, o sensor vai aumentar os valores do nivel de CO2
+  if(heaterStatus){ // se o aquecedor tiver ligado, o sensor vai aumentar os valores da temperatura
     details = {
       ...details,
       temperatura: details.temperatura + 1

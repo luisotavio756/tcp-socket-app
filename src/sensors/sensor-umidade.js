@@ -49,10 +49,10 @@ client.connect(options, () => {
 
 
 /**
- * @param heaterStatus é do tipo boolean, possíveis valores true ou false
+ * @param irrigationStatus é do tipo boolean, possíveis valores true ou false
  */
-client.on("data", (heaterStatus)=>{
-  if(heaterStatus){ // se o aquecedor tiver ligado, o sensor vai aumentar os valores do nivel de CO2
+client.on("data", (irrigationStatus)=>{
+  if(irrigationStatus){ // se o sistema de irrigação tiver ligado, o sensor vai aumentar os valores da umidade
     details = {
       ...details,
       umidade: details.umidade + 1
