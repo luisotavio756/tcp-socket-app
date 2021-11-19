@@ -23,6 +23,11 @@ server.on('connection', (socket) => {
   const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`;
   console.log('New client is connected %s', remoteAddress);
 
+  socket.addListener("teste", function(){
+    socket.write("tezascascas");
+  });
+
+
   socket.on('data', (data) => {
     //caso a mensagem seja um JSON, ele irá realizar as devidas ações
     if(isJSON(data.toString())){
@@ -35,6 +40,7 @@ server.on('connection', (socket) => {
       console.log(data.toString());
     }
   });
+
 
   socket.once('close', () => {
     lastestSensorLogs = [];

@@ -48,7 +48,7 @@ function setStatusInterval(socket) {
 
 // o sensor se conecta ao gerenciador
 client.connect(options, () => {
-  console.log(`Sensor '${options.sensorId}' connected to server successfully`);
+  console.log(`Sensor '${details.sensorId}' connected to server successfully`);
   // Sensor faz sua identificação para o servidor
   client.write("HEAD / LCM/1.0\r\n");
   client.write(`Host: ${options.host}\r\n`);
