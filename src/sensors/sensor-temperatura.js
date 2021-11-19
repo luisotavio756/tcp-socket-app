@@ -37,7 +37,7 @@ function setStatusInterval(socket) {
 // o sensor se conecta ao gerenciador
 client.connect(options, () => {
   console.log(`Sensor '${options.sensorId}' connected to server successfully`);
-  //Sensor faz sua identificação para o servidor
+  // Sensor faz sua identificação para o servidor
   client.write("HEAD / LCM/1.0\r\n");
   client.write(`Host: ${options.host}\r\n`);
   client.write(`User-Agent: Sensor Client - Temperatura Interna\r\n`);
@@ -45,6 +45,18 @@ client.connect(options, () => {
 
   // inicializa o envio de mensagens para o servidor a cada 1 segundo
   setStatusInterval(client);
+})
+
+/**
+ * @param heaterStatus é do tipo boolean, possíveis valores true ou false
+ */
+ client.on("data", (heaterStatus)=>{
+  if(heaterStatus){ // se o aquecedor tiver ligado, o sensor vai aumentar os valores do nivel de CO2
+    details = {
+      ...details,
+      temperatura: details.temperatura + 1
+    }
+  }
 })
 
 client.on("close", ()=>{disconnect(); clearStatusInterval();})

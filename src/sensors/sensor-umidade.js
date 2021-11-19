@@ -47,4 +47,17 @@ client.connect(options, () => {
   setStatusInterval(client);
 })
 
+
+/**
+ * @param heaterStatus é do tipo boolean, possíveis valores true ou false
+ */
+client.on("data", (heaterStatus)=>{
+  if(heaterStatus){ // se o aquecedor tiver ligado, o sensor vai aumentar os valores do nivel de CO2
+    details = {
+      ...details,
+      umidade: details.umidade + 1
+    }
+  }
+})
+
 client.on("close", ()=>{disconnect(); clearStatusInterval();})
