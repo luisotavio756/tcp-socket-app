@@ -36,10 +36,16 @@ server.on('connection', (socket) => {
 
       // só entra aqui, quando tiver sensor já registrado
       if(!!lastestSensorLogs && lastestSensorLogs.length > 0){
+        // comunicação entre o atuador com o sensor de temperatura
         if (parsedData.module === 'aquecedor' && parsedData.action === 'ligar') {
           const sensorFound = findByNameSensor("temperatura");
-          sensorFound.socket.write(parsedData.action);//envia uma mensagem pro sensor destinado
+          sensorFound.socket.write(parsedData.module);//envia uma mensagem pro sensor destinado
+        }else if (parsedData.module === 'resfriador' && parsedData.action === 'ligar'){
+          const sensorFound = findByNameSensor("temperatura");
+          sensorFound.socket.write(parsedData.module)
         }
+
+        // TODO: Realizar a comunicação entre o atuador e os sensores co2 e umidade
       }
 
       console.log(parsedData);

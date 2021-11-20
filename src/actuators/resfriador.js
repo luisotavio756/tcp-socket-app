@@ -2,15 +2,15 @@ const net = require('net');
 
 const actuatorId = Date.now();
 
-const payload = {
-  module: 'aquecedor',
-  action: 'ligar'
-};
-
 const options = {
   host: 'localhost',
   port: 9000,
   localAddress: '127.0.0.4'
+};
+
+const payload = {
+  module: 'resfriador',
+  action: 'ligar'
 };
 
 const client = new net.Socket();
@@ -31,8 +31,9 @@ client.connect(options, () => {
   // Sensor faz sua identificação para o servidor
   client.write("HEAD / LCM/1.0\r\n");
   client.write(`Host: ${options.host}\r\n`);
-  client.write(`User-Agent: Actuator Client - Resfriador\r\n`);
+  client.write(`User-Agent: Actuator Client - Aquecedor\r\n`);
   client.write(`ActuatorId: ${actuatorId}`);
+
 
   setInterval(() => {
     client.write(Buffer.from(JSON.stringify(payload)))

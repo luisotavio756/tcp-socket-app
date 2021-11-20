@@ -48,13 +48,19 @@ client.connect(options, () => {
 })
 
 /**
- * @param heaterStatus é do tipo boolean, possíveis valores true ou false
+ * @param heaterStatus é do tipo string, possíveis valores aquecedor ou resfriador
  */
  client.on("data", (heaterStatus)=>{
-  if(heaterStatus == "ligar"){ // se o aquecedor tiver ligado, o sensor vai aumentar os valores da temperatura
+   console.log(heaterStatus)
+  if(heaterStatus.toString() === "aquecedor"){ // se o aquecedor tiver ligado, o sensor vai aumentar os valores da temperatura
     details = {
       ...details,
       temperatura: details.temperatura + 1
+    }
+  }else if (heaterStatus.toString() === 'resfriador'){// se o resfriador tiver ligado, o sensor vai diminuir os valores da temperatura
+    details = {
+      ...details,
+      temperatura: details.temperatura - 1
     }
   }
 })
