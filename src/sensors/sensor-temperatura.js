@@ -50,8 +50,7 @@ client.connect(options, () => {
 /**
  * @param heaterStatus é do tipo string, possíveis valores aquecedor ou resfriador
  */
- client.on("data", (heaterStatus)=>{
-   console.log(heaterStatus)
+client.on("data", (heaterStatus)=>{
   if(heaterStatus.toString() === "aquecedor"){ // se o aquecedor tiver ligado, o sensor vai aumentar os valores da temperatura
     details = {
       ...details,

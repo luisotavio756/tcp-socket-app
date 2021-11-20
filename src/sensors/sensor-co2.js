@@ -52,10 +52,10 @@ client.connect(options, () => {
 })
 
 /**
- * @param injectorStatus é do tipo boolean, possíveis valores true ou false
+ * @param injectorStatus é do tipo string
  */
 client.on("data", (injectorStatus)=>{
-  if(injectorStatus === "injetor"){ // se o injetor tiver ligado, o sensor vai aumentar os valores do nivel de CO2
+  if(injectorStatus.toString() === "injetor"){ // se o injetor tiver ligado, o sensor vai aumentar os valores do nivel de CO2
     details = {
       ...details,
       nivelCO2: details.nivelCO2 + 1

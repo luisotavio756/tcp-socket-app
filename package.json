@@ -10,7 +10,9 @@
     "sensor-umidade": "node src/sensors/sensor-umidade.js",
     "sensor-co2": "node src/sensors/sensor-co2.js",
     "actuator-aquecedor": "node src/actuators/aquecedor.js",
-    "actuator-resfriador": "node src/actuators/resfriador.js"
+    "actuator-resfriador": "node src/actuators/resfriador.js",
+    "actuator-injetor": "node src/actuators/injetor.js",
+    "actuator-irrigacao": "node src/actuators/irrigacao.js"
   },
   "dependencies": {
     "readline-sync": "^1.4.10"
