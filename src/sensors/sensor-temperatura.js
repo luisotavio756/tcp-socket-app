@@ -8,7 +8,7 @@ const options = {
   localAddress: "127.0.0.2"
 }
 
-let details = {sensorId: sensorId, temperatura: 30};
+let details = {sensorId: sensorId, temperatura: 30, sensorName: "temperatura"};
 
 const client = new net.Socket();
 
@@ -47,16 +47,11 @@ client.connect(options, () => {
   setStatusInterval(client);
 })
 
-
-client.on("teste", (data) => {
-  console.log(data);
-})
-
 /**
  * @param heaterStatus é do tipo boolean, possíveis valores true ou false
  */
  client.on("data", (heaterStatus)=>{
-  if(heaterStatus){ // se o aquecedor tiver ligado, o sensor vai aumentar os valores da temperatura
+  if(heaterStatus == "ligar"){ // se o aquecedor tiver ligado, o sensor vai aumentar os valores da temperatura
     details = {
       ...details,
       temperatura: details.temperatura + 1

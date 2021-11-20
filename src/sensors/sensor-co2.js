@@ -11,7 +11,8 @@ const options = {
 let details = {
   sensorId: sensorId,
   aquecedorOn: true,
-  nivelCO2: 0
+  nivelCO2: 0,
+  sensorName: "co2"
 };
 
 const client = new net.Socket();
@@ -28,9 +29,9 @@ function clearStatusInterval(){
 }
 
 function updateSensor() {
-  if (details.aquecedorOn) {
-    details.nivelCO2 = details.nivelCO2 + 1;
-  }
+  // if (details.aquecedorOn) {
+  //   details.nivelCO2 = details.nivelCO2 + 1;
+  // }
 }
 
 function setStatusInterval(socket) {
@@ -68,6 +69,8 @@ client.on("data", (injectorStatus)=>{
       ...details,
       nivelCO2: details.nivelCO2 + 1
     }
+
+    console.log('teste');
   }
 })
 

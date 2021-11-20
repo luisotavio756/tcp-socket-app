@@ -8,7 +8,7 @@ const options = {
   localAddress: "127.0.0.2"
 }
 
-let details = {sensorId: sensorId, umidade:1};
+let details = {sensorId: sensorId, umidade:1, sensorName: "umidade"};
 
 const client = new net.Socket();
 

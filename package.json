@@ -8,7 +8,8 @@
     "client": "node src/client.js",
     "sensor-temperatura": "node src/sensors/sensor-temperatura.js",
     "sensor-umidade": "node src/sensors/sensor-umidade.js",
-    "sensor-co2": "node src/sensors/sensor-co2.js"
+    "sensor-co2": "node src/sensors/sensor-co2.js",
+    "actuator-aquecedor": "node src/actuators/aquecedor.js"
   },
   "dependencies": {
     "readline-sync": "^1.4.10"
