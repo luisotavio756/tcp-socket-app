@@ -28,20 +28,12 @@ function clearStatusInterval(){
   statusInterval && clearInterval(statusInterval);
 }
 
-function updateSensor() {
-  // if (details.aquecedorOn) {
-  //   details.nivelCO2 = details.nivelCO2 + 1;
-  // }
-}
-
 function setStatusInterval(socket) {
   if (statusInterval) {
     clearInterval(statusInterval);
   }
 
   statusInterval = setInterval(() => {
-    updateSensor();
-
     const buffer = Buffer.from(JSON.stringify(details));
     socket.write(buffer);
   }, 1000);
