@@ -10,7 +10,6 @@ const options = {
 
 let details = {
   sensorId: sensorId,
-  aquecedorOn: true,
   nivelCO2: 0,
   sensorName: "co2"
 };
@@ -56,13 +55,11 @@ client.connect(options, () => {
  * @param injectorStatus é do tipo boolean, possíveis valores true ou false
  */
 client.on("data", (injectorStatus)=>{
-  if(injectorStatus){ // se o injetor tiver ligado, o sensor vai aumentar os valores do nivel de CO2
+  if(injectorStatus === "injetor"){ // se o injetor tiver ligado, o sensor vai aumentar os valores do nivel de CO2
     details = {
       ...details,
       nivelCO2: details.nivelCO2 + 1
     }
-
-    console.log('teste');
   }
 })
 

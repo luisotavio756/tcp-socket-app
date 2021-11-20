@@ -52,7 +52,7 @@ client.connect(options, () => {
  * @param irrigationStatus é do tipo boolean, possíveis valores true ou false
  */
 client.on("data", (irrigationStatus)=>{
-  if(irrigationStatus){ // se o sistema de irrigação tiver ligado, o sensor vai aumentar os valores da umidade
+  if(irrigationStatus === "irrigacao"){ // se o sistema de irrigação tiver ligado, o sensor vai aumentar os valores da umidade
     details = {
       ...details,
       umidade: details.umidade + 1
