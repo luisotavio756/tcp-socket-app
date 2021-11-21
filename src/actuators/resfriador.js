@@ -31,7 +31,7 @@ client.connect(options, () => {
   // Sensor faz sua identificação para o servidor
   client.write("HEAD / LCM/1.0\r\n");
   client.write(`Host: ${options.host}\r\n`);
-  client.write(`User-Agent: Actuator Client - Aquecedor\r\n`);
+  client.write(`User-Agent: Actuator Client - Resfriador\r\n`);
   client.write(`ActuatorId: ${actuatorId}`);
 
 
