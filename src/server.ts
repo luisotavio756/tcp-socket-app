@@ -1,19 +1,22 @@
 import ISensorDetails from './dtos/ISensorDetais';
 import * as net from 'net';
-import { isJSON } from './utils/index';
+import { createISOMessage, isISOMessage, isJSON } from './utils/index';
+import IISOMessage from './dtos/ISOMessage';
 
 const server = net.createServer({ allowHalfOpen: true });
 
 let lastestSensorLogs: Array<{
   sensorId: number;
+  sensorName: string;
   remoteAddress: string | undefined;
   message: string;
   socket: net.Socket;
-}> = [];// array do tipo {sensorID: number, message: string, name_sensor: string}
+}> = [];
 
 function addSensor(socket: net.Socket, data: ISensorDetails): void {
   const newSensor = {
     sensorId: data.sensorId,
+    sensorName: data.sensorName,
     remoteAddress: socket.remoteAddress,
     message: JSON.stringify(data),
     socket
@@ -26,9 +29,7 @@ function addSensor(socket: net.Socket, data: ISensorDetails): void {
 
 function findBySensorName(sensorName: string) {
   return lastestSensorLogs
-    .find(sensor => JSON
-      .parse(sensor.message).sensorName.toLocaleLowerCase().includes(sensorName)
-    );
+    .find(sensor => sensor.sensorName.toLocaleLowerCase() === sensorName);
 }
 
 server.on('connection', (socket) => {
@@ -39,10 +40,25 @@ server.on('connection', (socket) => {
     const serializedData = data.toString();
     //caso a mensagem seja um JSON, ele irá realizar as devidas ações
     if (isJSON(serializedData)){
-      const parsedData = JSON.parse(serializedData);
+      const parsedData: IISOMessage = JSON.parse(serializedData);
 
-      if (!!parsedData && !!parsedData?.sensorId){
-        addSensor(socket, parsedData);
+      if (parsedData.message.action === 'SENSOR_DETAILS'){
+        const sensorDetail: ISensorDetails = parsedData.message.data as ISensorDetails;
+
+        addSensor(socket, sensorDetail);
+        console.log(sensorDetail);
+      } else if (parsedData.message.action === 'LIGAR_AQUECEDOR') {
+        const socketAquecedor = findBySensorName('temperatura');
+
+        const payload = createISOMessage({
+          emitter: 'Server',
+          message: {
+            action: 'LIGAR',
+            data: {}
+          }
+        });
+
+        socketAquecedor?.socket.write(Buffer.from(JSON.stringify(payload)));
       }
     }else{
       console.log(data.toString());

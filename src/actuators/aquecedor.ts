@@ -1,26 +1,15 @@
-const net = require('net');
+import net from 'net';
+import { createISOMessage } from '../utils';
 
 const actuatorId = Date.now();
 
-const payload = {
-  module: 'aquecedor',
-  action: 'ligar'
-};
-
-const options = {
+const options: net.SocketConnectOpts = {
   host: 'localhost',
   port: 9000,
   localAddress: '127.0.0.4'
 };
 
 const client = new net.Socket();
-
-client.on('data', function(chunk) {
-  console.log(`Data received from the server: ${chunk.toString()}.`);
-
-  // Request an end to the connection after the data has been received.
-  // client.end();
-});
 
 client.on('end', function() {
   console.log('Requested an end to the TCP connection');
@@ -34,8 +23,16 @@ client.connect(options, () => {
   client.write(`User-Agent: Actuator Client - Aquecedor\r\n`);
   client.write(`ActuatorId: ${actuatorId}`);
 
-  setInterval(() => {
-    client.write(Buffer.from(JSON.stringify(payload)))
-  }, 2000)
+  const payload = createISOMessage({
+    emitter: 'Actuator-Aquecedor',
+    message: {
+      action: 'LIGAR_AQUECEDOR',
+      data: {
+        module: 'aquecedor'
+      }
+    }
+  });
+
+  client.write(Buffer.from(JSON.stringify(payload)));
 });
 

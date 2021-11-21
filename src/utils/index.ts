@@ -31,7 +31,14 @@ function createISOMessage({
   }
 }
 
+function isISOMessage(data: string) {
+  const message = JSON.parse(data);
+
+  return message?.id && message?.emitter && message?.message && message?.createdAt;
+}
+
 export {
   isJSON,
+  isISOMessage,
   createISOMessage
 };

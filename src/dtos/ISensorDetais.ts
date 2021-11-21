@@ -1,5 +1,5 @@
 export default interface ISensorDetails {
-  sensorId: number,
-  nivelCO2: number,
+  sensorId: number;
   sensorName: string;
+  [key: string]: any;
 };
