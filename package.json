@@ -4,20 +4,22 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "server": "node src/server.js",
-    "client": "node src/client.js",
-    "sensor-temperatura": "node src/sensors/sensor-temperatura.js",
-    "sensor-umidade": "node src/sensors/sensor-umidade.js",
-    "sensor-co2": "node src/sensors/sensor-co2.js",
-    "actuator-aquecedor": "node src/actuators/aquecedor.js",
-    "actuator-resfriador": "node src/actuators/resfriador.js",
-    "actuator-injetor": "node src/actuators/injetor.js",
-    "actuator-irrigacao": "node src/actuators/irrigacao.js"
+    "server": "yarn ts-node src/server.ts",
+    "client": "yarn ts-node src/client.js",
+    "sensor-temperatura": "yarn ts-node src/sensors/sensor-temperatura.js",
+    "sensor-umidade": "yarn ts-node src/sensors/sensor-umidade.js",
+    "sensor-co2": "yarn ts-node src/sensors/sensor-co2.js",
+    "actuator-aquecedor": "yarn ts-node src/actuators/aquecedor.js",
+    "actuator-resfriador": "yarn ts-node src/actuators/resfriador.js",
+    "actuator-injetor": "yarn ts-node src/actuators/injetor.js",
+    "actuator-irrigacao": "yarn ts-node src/actuators/irrigacao.js"
   },
   "dependencies": {
     "readline-sync": "^1.4.10"
   },
   "devDependencies": {
+    "@types/node": "^16.11.9",
+    "ts-node": "^10.4.0",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.5.2"
   }
