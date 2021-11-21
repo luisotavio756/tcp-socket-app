@@ -27,9 +27,7 @@ client.connect(options, () => {
     emitter: 'Actuator-Aquecedor',
     message: {
       action: 'LIGAR_AQUECEDOR',
-      data: {
-        module: 'aquecedor'
-      }
+      data: {}
     }
   });
 

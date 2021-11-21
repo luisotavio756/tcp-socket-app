@@ -59,6 +59,18 @@ server.on('connection', (socket) => {
         });
 
         socketAquecedor?.socket.write(Buffer.from(JSON.stringify(payload)));
+      } else if (parsedData.message.action === 'LIGAR_INJETOR') {
+        const socketInjetor = findBySensorName('co2');
+
+        const payload = createISOMessage({
+          emitter: 'Server',
+          message: {
+            action: 'LIGAR',
+            data: {}
+          }
+        });
+
+        socketInjetor?.socket.write(Buffer.from(JSON.stringify(payload)));
       }
     }else{
       console.log(data.toString());

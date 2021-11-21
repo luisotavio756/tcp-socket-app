@@ -1,39 +1,61 @@
-const net = require("net");
-//identificador único do sensor
-const sensorId = Date.now();
+import ISensorDetails from '../dtos/ISensorDetais';
+import IISOMessage from '../dtos/ISOMessage';
+import net from 'net';
+import { createISOMessage } from '../utils';
 
-const options = {
+const sensorId = Date.now();
+let sensorOpen = false;
+
+const options: net.SocketConnectOpts = {
   host: "localhost",
   port: 9000,
   localAddress: "127.0.0.2"
 }
 
-let details = {
+let details: ISensorDetails = {
   sensorId: sensorId,
+  sensorName: "co2",
   nivelCO2: 0,
-  sensorName: "co2"
 };
 
 const client = new net.Socket();
 
-let statusInterval = null;
+let statusInterval: NodeJS.Timer | null = null;
 
 function disconnect(){
   console.debug("Successfully disconnected from server!");
   client.destroy();
 }
 
+function incrementValue() {
+  details = {
+    ...details,
+    nivelCO2: details.nivelCO2 + 1
+  }
+}
+
 function clearStatusInterval(){
   statusInterval && clearInterval(statusInterval);
 }
 
-function setStatusInterval(socket) {
+function setStatusInterval(socket: net.Socket) {
   if (statusInterval) {
     clearInterval(statusInterval);
   }
 
   statusInterval = setInterval(() => {
-    const buffer = Buffer.from(JSON.stringify(details));
+    sensorOpen && incrementValue();
+
+    const payload = createISOMessage({
+      emitter: 'Sensor-CO2',
+      message: {
+        action: 'SENSOR_DETAILS',
+        data: details
+      }
+    });
+
+    const buffer = Buffer.from(JSON.stringify(payload));
+
     socket.write(buffer);
   }, 1000);
 }
@@ -51,15 +73,13 @@ client.connect(options, () => {
   setStatusInterval(client);
 })
 
-/**
- * @param injectorStatus é do tipo string
- */
-client.on("data", (injectorStatus)=>{
-  if(injectorStatus.toString() === "injetor"){ // se o injetor tiver ligado, o sensor vai aumentar os valores do nivel de CO2
-    details = {
-      ...details,
-      nivelCO2: details.nivelCO2 + 1
-    }
+
+client.on("data", (data)=>{
+  const serializedData = data.toString();
+  const parsedData: IISOMessage = JSON.parse(serializedData);
+
+  if (parsedData.message.action === 'LIGAR') {
+    sensorOpen = true;
   }
 })
 
