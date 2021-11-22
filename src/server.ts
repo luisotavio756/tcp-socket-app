@@ -41,37 +41,67 @@ server.on('connection', (socket) => {
     //caso a mensagem seja um JSON, ele irá realizar as devidas ações
     if (isJSON(serializedData)){
       const parsedData: IISOMessage = JSON.parse(serializedData);
+      const action = parsedData.message.action;
 
-      if (parsedData.message.action === 'SENSOR_DETAILS'){
-        const sensorDetail: ISensorDetails = parsedData.message.data as ISensorDetails;
+      switch (action) {
+        case 'SENSOR_DETAILS': {
+          const sensorDetail: ISensorDetails = parsedData.message.data as ISensorDetails;
 
-        addSensor(socket, sensorDetail);
-        console.log(sensorDetail);
-      } else if (parsedData.message.action === 'LIGAR_AQUECEDOR') {
-        const socketAquecedor = findBySensorName('temperatura');
+          addSensor(socket, sensorDetail);
+          console.log(sensorDetail);
 
-        const payload = createISOMessage({
-          emitter: 'Server',
-          message: {
-            action: 'LIGAR',
-            data: {}
-          }
-        });
+          break;
+        }
+        case 'LIGAR_AQUECEDOR': {
+          const socketSensorTemperatura = findBySensorName('temperatura');
 
-        socketAquecedor?.socket.write(Buffer.from(JSON.stringify(payload)));
-      } else if (parsedData.message.action === 'LIGAR_INJETOR') {
-        const socketInjetor = findBySensorName('co2');
+          const payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'LIGAR',
+              data: {}
+            }
+          });
 
-        const payload = createISOMessage({
-          emitter: 'Server',
-          message: {
-            action: 'LIGAR',
-            data: {}
-          }
-        });
+          socketSensorTemperatura?.socket.write(Buffer.from(JSON.stringify(payload)));
 
-        socketInjetor?.socket.write(Buffer.from(JSON.stringify(payload)));
+          break;
+        }
+        case 'LIGAR_INJETOR': {
+          const socketSensorCO2 = findBySensorName('co2');
+
+          const payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'LIGAR',
+              data: {}
+            }
+          });
+
+          socketSensorCO2?.socket.write(Buffer.from(JSON.stringify(payload)));
+
+          break;
+        }
+        case 'LIGAR_IRRIGACAO': {
+          const socketSensorUmidade = findBySensorName('umidade');
+
+          const payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'LIGAR',
+              data: {}
+            }
+          });
+
+          socketSensorUmidade?.socket.write(Buffer.from(JSON.stringify(payload)));
+
+          break;
+        }
+        default:
+          console.log('Action not recognized!');
+          break;
       }
+
     }else{
       console.log(data.toString());
     }
