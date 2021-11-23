@@ -1,6 +1,6 @@
 import ISensorDetails from './dtos/ISensorDetais';
 import * as net from 'net';
-import { createISOMessage, isISOMessage, isJSON } from './utils/index';
+import { createISOMessage, isJSON } from './utils/index';
 import IISOMessage from './dtos/ISOMessage';
 
 const server = net.createServer({ allowHalfOpen: true });
@@ -58,7 +58,22 @@ server.on('connection', (socket) => {
           const payload = createISOMessage({
             emitter: 'Server',
             message: {
-              action: 'LIGAR',
+              action: 'LIGAR_AQUECEDOR',
+              data: {}
+            }
+          });
+
+          socketSensorTemperatura?.socket.write(Buffer.from(JSON.stringify(payload)));
+
+          break;
+        }
+        case 'LIGAR_RESFRIADOR': {
+          const socketSensorTemperatura = findBySensorName('temperatura');
+
+          const payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'LIGAR_RESFRIADOR',
               data: {}
             }
           });
@@ -115,6 +130,7 @@ server.on('connection', (socket) => {
   socket.on('error', (err) => {
     console.log('Connection %s error: %s', remoteAddress, err.message);
   });
+
 });
 
 server.on('close', () => {

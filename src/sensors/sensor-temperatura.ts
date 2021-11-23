@@ -4,7 +4,8 @@ import { createISOMessage } from '../utils';
 import IISOMessage from '../dtos/ISOMessage';
 
 const sensorId = Date.now();
-let sensorOpen = false;
+let aquecedor = false;
+let resfriador = false;
 
 const options: net.SocketConnectOpts = {
   host: "localhost",
@@ -34,6 +35,13 @@ function incrementValue() {
   }
 }
 
+function decrementValue() {
+  details = {
+    ...details,
+    temperatura: details.temperatura - 1
+  }
+}
+
 function clearStatusInterval(){
   statusInterval && clearInterval(statusInterval);
 }
@@ -44,7 +52,8 @@ function setStatusInterval(socket: net.Socket) {
   }
 
   statusInterval = setInterval(() => {
-    sensorOpen && incrementValue();
+    aquecedor && incrementValue();
+    resfriador && decrementValue();
 
     const payload = createISOMessage({
       emitter: 'Sensor-Temperatura',
@@ -78,8 +87,12 @@ client.on('data', (data) => {
   const serializedData = data.toString();
   const parsedData: IISOMessage = JSON.parse(serializedData);
 
-  if (parsedData.message.action === 'LIGAR') {
-    sensorOpen = true;
+  if (parsedData.message.action === 'LIGAR_AQUECEDOR') {
+    resfriador = false;
+    aquecedor = true;
+  } else if (parsedData.message.action === 'LIGAR_RESFRIADOR') {
+    aquecedor = false;
+    resfriador = true;
   }
 });
 
