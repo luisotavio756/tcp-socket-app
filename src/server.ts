@@ -114,14 +114,49 @@ server.on('connection', (socket) => {
         }
         case 'SENSOR_PARAMETERS': {
           const {
+            valueMinSensorTemperature,
+            valueMaxSensorTemperature,
+            valueMaxSensorHumidity,
             valueMaxSensorCo2,
-            // outros
           } = parsedData.message.data as ISensorDetails;
 
+          let payload;
 
+          // Seta o valor mínimo e máximo para o sensor de temperatura.
+          const socketSensorTemperature = findBySensorName('temperatura');
+
+          payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'SET_PARAMETERS_VALUES',
+              data: {
+                valueMinSensorTemperature,
+                valueMaxSensorTemperature,
+              }
+            }
+          });
+
+          socketSensorTemperature?.socket.write(Buffer.from(JSON.stringify(payload)));
+
+          // Seta o valor máximo para o sensor de umidade.
+          const socketSensorHumidity = findBySensorName('umidade');
+
+          payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'SET_PARAMETERS_VALUES',
+              data: {
+                valueMaxSensorHumidity,
+              }
+            }
+          });
+
+          socketSensorHumidity?.socket.write(Buffer.from(JSON.stringify(payload)));
+
+          // Seta o valor máximo para o sensor de CO2.
           const socketSensorCO2 = findBySensorName('co2');
 
-          const payload = createISOMessage({
+          payload = createISOMessage({
             emitter: 'Server',
             message: {
               action: 'SET_PARAMETERS_VALUES',
@@ -135,7 +170,40 @@ server.on('connection', (socket) => {
 
           break;
         }
-        case 'ALERT_SENSOR_MAX_VALUE': {
+        case 'ALERT_SENSOR_TEMPERATURE_MAX_VALUE': {
+          const {
+            temperatura,
+            sensorName,
+            sensorId
+          } = parsedData.message.data as ISensorDetails;
+
+          console.log(`The ${sensorName}-${sensorId} sensor is bigger than the limit\nActual value: ${temperatura}`);
+
+          break;
+        }
+        case 'ALERT_SENSOR_TEMPERATURE_MIN_VALUE': {
+          const {
+            temperatura,
+            sensorName,
+            sensorId
+          } = parsedData.message.data as ISensorDetails;
+
+          console.log(`The ${sensorName}-${sensorId} sensor is smaller than the limit\nActual value: ${temperatura}`);
+
+          break;
+        }
+        case 'ALERT_SENSOR_HUMIDITY_MAX_VALUE': {
+          const {
+            umidade,
+            sensorName,
+            sensorId
+          } = parsedData.message.data as ISensorDetails;
+
+          console.log(`The ${sensorName}-${sensorId} sensor is bigger than the limit\nActual value: ${umidade}`);
+
+          break;
+        }
+        case 'ALERT_SENSOR_CO2_MAX_VALUE': {
           const {
             nivelCO2,
             sensorName,

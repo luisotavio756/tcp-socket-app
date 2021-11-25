@@ -4,7 +4,9 @@ import ISensorDetails from '../dtos/ISensorDetais';
 import IISOMessage from '../dtos/ISOMessage';
 
 const sensorId = Date.now();
-let sensorOpen = false;
+let irrigacao = false;
+
+let maxValue: null | number = null;
 
 const options: net.SocketConnectOpts = {
   host: "localhost",
@@ -44,19 +46,37 @@ function setStatusInterval(socket: net.Socket) {
   }
 
   statusInterval = setInterval(() => {
-    sensorOpen && incrementValue();
+    if (maxValue && (details.umidade >= maxValue)) {
+      const payload = createISOMessage({
+        emitter: 'Sensor-Umidade',
+        message: {
+          action: 'ALERT_SENSOR_HUMIDITY_MAX_VALUE',
+          data: details
+        }
+      });
 
-    const payload = createISOMessage({
-      emitter: 'Sensor-Umidade',
-      message: {
-        action: 'SENSOR_DETAILS',
-        data: details
-      }
-    });
+      const buffer = Buffer.from(JSON.stringify(payload));
 
-    const buffer = Buffer.from(JSON.stringify(payload));
+      socket.write(buffer);
 
-    socket.write(buffer);
+      irrigacao = false;
+      clearStatusInterval();
+    } else {
+      irrigacao && incrementValue();
+
+      const payload = createISOMessage({
+        emitter: 'Sensor-Umidade',
+        message: {
+          action: 'SENSOR_DETAILS',
+          data: details
+        }
+      });
+
+      const buffer = Buffer.from(JSON.stringify(payload));
+
+      socket.write(buffer);
+    }
+
   }, 1000);
 }
 
@@ -79,7 +99,15 @@ client.on("data", (data: Buffer)=>{
   const parsedData: IISOMessage = JSON.parse(serializedData);
 
   if (parsedData.message.action === 'LIGAR') {
-    sensorOpen = true;
+    irrigacao = true;
+
+    !statusInterval && setStatusInterval(client);
+  } else if (parsedData.message.action === 'SET_PARAMETERS_VALUES') {
+    const {
+      valueMaxSensorHumidity
+    } = parsedData.message.data as ISensorDetails;
+
+    maxValue = valueMaxSensorHumidity;
   }
 })
 

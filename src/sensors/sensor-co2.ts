@@ -50,7 +50,7 @@ function setStatusInterval(socket: net.Socket) {
       const payload = createISOMessage({
         emitter: 'Sensor-CO2',
         message: {
-          action: 'ALERT_SENSOR_MAX_VALUE',
+          action: 'ALERT_SENSOR_CO2_MAX_VALUE',
           data: details
         }
       });

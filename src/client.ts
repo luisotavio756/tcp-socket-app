@@ -26,16 +26,32 @@ function showMenu({
 }
 
 function menu() {
+  
+  let valueMinSensorTemperature: string | number = readlineSync
+    .question('\n\nHow is the min value from the temperature sensor?\n');
+    valueMinSensorTemperature = parseInt(valueMinSensorTemperature, 10);
+
+  let valueMaxSensorTemperature: string | number = readlineSync
+    .question('\n\nHow is the max value from the temperature sensor?\n');
+    valueMaxSensorTemperature = parseInt(valueMaxSensorTemperature, 10);
+
+  let valueMaxSensorHumidity: string | number = readlineSync
+    .question('\n\nHow is the max value from the humidity sensor?\n');
+    valueMaxSensorHumidity = parseInt(valueMaxSensorHumidity, 10);
+
   let valueMaxSensorCo2: string | number = readlineSync
     .question('\n\nHow is the max value from the CO2 sensor?\n');
-  valueMaxSensorCo2 = parseInt(valueMaxSensorCo2, 10);
+    valueMaxSensorCo2 = parseInt(valueMaxSensorCo2, 10);
 
   const payload = createISOMessage({
     emitter: 'Client',
     message: {
       action: 'SENSOR_PARAMETERS',
       data: {
-        valueMaxSensorCo2
+        valueMinSensorTemperature,
+        valueMaxSensorTemperature,
+        valueMaxSensorHumidity,
+        valueMaxSensorCo2,
       }
     }
   });

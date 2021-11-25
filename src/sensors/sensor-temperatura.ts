@@ -7,6 +7,9 @@ const sensorId = Date.now();
 let aquecedor = false;
 let resfriador = false;
 
+let minValue: null | number = null;
+let maxValue: null | number = null;
+
 const options: net.SocketConnectOpts = {
   host: "localhost",
   port: 9000,
@@ -52,20 +55,40 @@ function setStatusInterval(socket: net.Socket) {
   }
 
   statusInterval = setInterval(() => {
-    aquecedor && incrementValue();
-    resfriador && decrementValue();
+    if (maxValue && (details.temperatura >= maxValue) || minValue && (details.temperatura <= minValue)) {
 
-    const payload = createISOMessage({
-      emitter: 'Sensor-Temperatura',
-      message: {
-        action: 'SENSOR_DETAILS',
-        data: details
-      }
-    });
+      const payload = createISOMessage({
+        emitter: 'Sensor-Temperatura',
+        message: {
+          action: (maxValue && (details.temperatura >= maxValue)) ? 'ALERT_SENSOR_TEMPERATURE_MAX_VALUE' : 'ALERT_SENSOR_TEMPERATURE_MIN_VALUE',
+          data: details
+        }
+      });
 
-    const buffer = Buffer.from(JSON.stringify(payload));
+      const buffer = Buffer.from(JSON.stringify(payload));
 
-    socket.write(buffer);
+      socket.write(buffer);
+
+      aquecedor = false;
+      resfriador = false;
+      clearStatusInterval();
+    } else {
+      aquecedor && incrementValue();
+      resfriador && decrementValue();
+
+      const payload = createISOMessage({
+        emitter: 'Sensor-Temperatura',
+        message: {
+          action: 'SENSOR_DETAILS',
+          data: details
+        }
+      });
+
+      const buffer = Buffer.from(JSON.stringify(payload));
+
+      socket.write(buffer);
+    }
+
   }, 1000);
 }
 
@@ -90,9 +113,21 @@ client.on('data', (data) => {
   if (parsedData.message.action === 'LIGAR_AQUECEDOR') {
     resfriador = false;
     aquecedor = true;
+
+    !statusInterval && setStatusInterval(client);
   } else if (parsedData.message.action === 'LIGAR_RESFRIADOR') {
     aquecedor = false;
     resfriador = true;
+
+    !statusInterval && setStatusInterval(client);
+  } else if (parsedData.message.action === 'SET_PARAMETERS_VALUES') {
+    const {
+      valueMinSensorTemperature,
+      valueMaxSensorTemperature,
+    } = parsedData.message.data as ISensorDetails;
+
+    minValue = valueMinSensorTemperature;
+    maxValue = valueMaxSensorTemperature;
   }
 });
 
