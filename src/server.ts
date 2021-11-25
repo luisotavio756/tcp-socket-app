@@ -112,6 +112,40 @@ server.on('connection', (socket) => {
 
           break;
         }
+        case 'SENSOR_PARAMETERS': {
+          const {
+            valueMaxSensorCo2,
+            // outros
+          } = parsedData.message.data as ISensorDetails;
+
+
+          const socketSensorCO2 = findBySensorName('co2');
+
+          const payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'SET_PARAMETERS_VALUES',
+              data: {
+                valueMaxSensorCo2,
+              }
+            }
+          });
+
+          socketSensorCO2?.socket.write(Buffer.from(JSON.stringify(payload)));
+
+          break;
+        }
+        case 'ALERT_SENSOR_MAX_VALUE': {
+          const {
+            nivelCO2,
+            sensorName,
+            sensorId
+          } = parsedData.message.data as ISensorDetails;
+
+          console.log(`The ${sensorName}-${sensorId} sensor is bigger than the limit\nActual value: ${nivelCO2}`);
+
+          break;
+        }
         default:
           console.log('Action not recognized!');
           break;

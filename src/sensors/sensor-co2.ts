@@ -4,7 +4,9 @@ import net from 'net';
 import { createISOMessage } from '../utils';
 
 const sensorId = Date.now();
-let sensorOpen = false;
+let injetor = false;
+
+let maxValue: null | number = null;
 
 const options: net.SocketConnectOpts = {
   host: "localhost",
@@ -44,19 +46,37 @@ function setStatusInterval(socket: net.Socket) {
   }
 
   statusInterval = setInterval(() => {
-    sensorOpen && incrementValue();
+    if (maxValue && (details.nivelCO2 >= maxValue)) {
+      const payload = createISOMessage({
+        emitter: 'Sensor-CO2',
+        message: {
+          action: 'ALERT_SENSOR_MAX_VALUE',
+          data: details
+        }
+      });
 
-    const payload = createISOMessage({
-      emitter: 'Sensor-CO2',
-      message: {
-        action: 'SENSOR_DETAILS',
-        data: details
-      }
-    });
+      const buffer = Buffer.from(JSON.stringify(payload));
 
-    const buffer = Buffer.from(JSON.stringify(payload));
+      socket.write(buffer);
 
-    socket.write(buffer);
+      injetor = false;
+      clearStatusInterval();
+    } else {
+      injetor && incrementValue();
+
+      const payload = createISOMessage({
+        emitter: 'Sensor-CO2',
+        message: {
+          action: 'SENSOR_DETAILS',
+          data: details
+        }
+      });
+
+      const buffer = Buffer.from(JSON.stringify(payload));
+
+      socket.write(buffer);
+    }
+
   }, 1000);
 }
 
@@ -74,12 +94,20 @@ client.connect(options, () => {
 })
 
 
-client.on("data", (data)=>{
+client.on("data", (data) =>{
   const serializedData = data.toString();
   const parsedData: IISOMessage = JSON.parse(serializedData);
 
   if (parsedData.message.action === 'LIGAR') {
-    sensorOpen = true;
+    injetor = true;
+
+    !statusInterval && setStatusInterval(client);
+  } else if (parsedData.message.action === 'SET_PARAMETERS_VALUES') {
+    const {
+      valueMaxSensorCo2
+    } = parsedData.message.data as ISensorDetails;
+
+    maxValue = valueMaxSensorCo2;
   }
 })
 

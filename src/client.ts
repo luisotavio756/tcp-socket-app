@@ -1,5 +1,6 @@
 import net from 'net';
 import readlineSync from 'readline-sync';
+import { createISOMessage } from './utils';
 
 interface IMenuParams {
   milliseconds: number;
@@ -25,12 +26,36 @@ function showMenu({
 }
 
 function menu() {
-  const readLine = readlineSync
-    .question('\n\nHow do you want do?\n\n(\n\t1 - Aquecer\n\t2 - Injetar CO2\n\t3 - Irrigar\n\t4 - Resfriar\n\t5 - Fechar conexão\n)\n');
+  let valueMaxSensorCo2: string | number = readlineSync
+    .question('\n\nHow is the max value from the CO2 sensor?\n');
+  valueMaxSensorCo2 = parseInt(valueMaxSensorCo2, 10);
+
+  const payload = createISOMessage({
+    emitter: 'Client',
+    message: {
+      action: 'SENSOR_PARAMETERS',
+      data: {
+        valueMaxSensorCo2
+      }
+    }
+  });
+
+  client.write(Buffer.from(JSON.stringify(payload)));
+
+ /*  const readLine = readlineSync
+    .question('\n\nHow do you want do?\n\n(\n\t1 - Ligar aquecedor Aquecedor\n\t2 - Injetar CO2\n\t3 - Irrigar\n\t4 - Resfriar\n\t5 - Fechar conexão\n)\n');
 
   switch (readLine) {
     case "1":
-      //TODO: disparar action para ligar actuator para aquecer
+     const payload = createISOMessage({
+        emitter: 'Actuator-Injetor',
+        message: {
+          action: 'LIGAR_INJETOR',
+          data: {}
+        }
+      });
+
+      client.write(Buffer.from(JSON.stringify(payload)));
       showMenu({ milliseconds: 2500 });
 
       break;
@@ -58,7 +83,7 @@ function menu() {
       showMenu({ milliseconds: 500 });
 
       break;
-  }
+  } */
 }
 
 client.on('end', function() {
