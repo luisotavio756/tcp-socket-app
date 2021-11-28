@@ -30,7 +30,8 @@ client.connect(options, () => {
     }
   });
 
-  client.write(Buffer.from(JSON.stringify(payload)));
-
+  setInterval(()=>{
+    client.write(Buffer.from(JSON.stringify(payload)));
+  }, 1500);
 });
 

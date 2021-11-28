@@ -99,7 +99,7 @@ client.on("data", (data: Buffer)=>{
   const parsedData: IISOMessage = JSON.parse(serializedData);
 
   if (parsedData.message.action === 'LIGAR') {
-    irrigacao = true;
+    incrementValue();
 
     !statusInterval && setStatusInterval(client);
   } else if (parsedData.message.action === 'SET_PARAMETERS_VALUES') {

@@ -4,7 +4,6 @@ import net from 'net';
 import { createISOMessage } from '../utils';
 
 const sensorId = Date.now();
-let injetor = false;
 
 let maxValue: null | number = null;
 
@@ -27,13 +26,6 @@ let statusInterval: NodeJS.Timer | null = null;
 function disconnect(){
   console.debug("Successfully disconnected from server!");
   client.destroy();
-}
-
-function incrementValue() {
-  details = {
-    ...details,
-    nivelCO2: details.nivelCO2 + 1
-  }
 }
 
 function clearStatusInterval(){
@@ -59,10 +51,8 @@ function setStatusInterval(socket: net.Socket) {
 
       socket.write(buffer);
 
-      injetor = false;
       clearStatusInterval();
     } else {
-      injetor && incrementValue();
 
       const payload = createISOMessage({
         emitter: 'Sensor-CO2',
@@ -76,7 +66,6 @@ function setStatusInterval(socket: net.Socket) {
 
       socket.write(buffer);
     }
-
   }, 1000);
 }
 
@@ -99,7 +88,10 @@ client.on("data", (data) =>{
   const parsedData: IISOMessage = JSON.parse(serializedData);
 
   if (parsedData.message.action === 'LIGAR') {
-    injetor = true;
+    details = {
+      ...details,
+      nivelCO2: details.nivelCO2+1
+    };
 
     !statusInterval && setStatusInterval(client);
   } else if (parsedData.message.action === 'SET_PARAMETERS_VALUES') {

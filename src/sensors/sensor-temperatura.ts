@@ -73,9 +73,6 @@ function setStatusInterval(socket: net.Socket) {
       resfriador = false;
       clearStatusInterval();
     } else {
-      aquecedor && incrementValue();
-      resfriador && decrementValue();
-
       const payload = createISOMessage({
         emitter: 'Sensor-Temperatura',
         message: {
@@ -111,13 +108,11 @@ client.on('data', (data) => {
   const parsedData: IISOMessage = JSON.parse(serializedData);
 
   if (parsedData.message.action === 'LIGAR_AQUECEDOR') {
-    resfriador = false;
-    aquecedor = true;
+    incrementValue();
 
     !statusInterval && setStatusInterval(client);
   } else if (parsedData.message.action === 'LIGAR_RESFRIADOR') {
-    aquecedor = false;
-    resfriador = true;
+    decrementValue();
 
     !statusInterval && setStatusInterval(client);
   } else if (parsedData.message.action === 'SET_PARAMETERS_VALUES') {

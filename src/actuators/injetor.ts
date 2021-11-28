@@ -30,6 +30,9 @@ client.connect(options, () => {
     }
   });
 
-  client.write(Buffer.from(JSON.stringify(payload)));
+  setInterval(()=>{
+    console.log("cristiano")
+    client.write(Buffer.from(JSON.stringify(payload)));
+  }, 1500);
 });
 
