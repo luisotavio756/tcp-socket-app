@@ -19,7 +19,7 @@ const options: net.SocketConnectOpts = {
 let details: ISensorDetails = {
   sensorId: sensorId,
   sensorName: 'temperatura',
-  temperatura: 30,
+  temperatura: 1,
 };
 
 const client = new net.Socket();
