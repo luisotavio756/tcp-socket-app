@@ -123,6 +123,8 @@ client.on('data', (data) => {
 
     minValue = valueMinSensorTemperature;
     maxValue = valueMaxSensorTemperature;
+  } else if (parsedData.message.action === 'LOG') {
+    client.write(`Nível atual de Temperatura: ${details.temperatura}`);
   }
 });
 

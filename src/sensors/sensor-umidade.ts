@@ -108,6 +108,8 @@ client.on("data", (data: Buffer)=>{
     } = parsedData.message.data as ISensorDetails;
 
     maxValue = valueMaxSensorHumidity;
+  } else if (parsedData.message.action === 'LOG') {
+    client.write(`Nível atual de Umidade: ${details.umidade}`);
   }
 })
 

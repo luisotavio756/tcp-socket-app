@@ -100,6 +100,8 @@ client.on("data", (data) =>{
     } = parsedData.message.data as ISensorDetails;
 
     maxValue = valueMaxSensorCo2;
+  } else if (parsedData.message.action === 'LOG') {
+    client.write(`Nível atual de CO2: ${details.nivelCO2}`);
   }
 })
 

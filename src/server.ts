@@ -13,6 +13,8 @@ let lastestSensorLogs: Array<{
   socket: net.Socket;
 }> = [];
 
+let socketClient: null | net.Socket = null;
+
 function addSensor(socket: net.Socket, data: ISensorDetails): void {
   const newSensor = {
     sensorId: data.sensorId,
@@ -44,6 +46,13 @@ server.on('connection', (socket) => {
       const action = parsedData.message.action;
 
       switch (action) {
+        case 'SOCKET_CLIENT': {
+          socketClient = socket;
+
+          console.log(socketClient);
+
+          break;
+        }
         case 'SENSOR_DETAILS': {
           const sensorDetail: ISensorDetails = parsedData.message.data as ISensorDetails;
 
@@ -211,6 +220,54 @@ server.on('connection', (socket) => {
           } = parsedData.message.data as ISensorDetails;
 
           console.log(`The ${sensorName}-${sensorId} sensor is bigger than the limit\nActual value: ${nivelCO2}`);
+
+          break;
+        }
+        case 'LOG_TEMPERATURA': {
+
+          const socketSensorTemperature = findBySensorName('temperatura');
+
+          const payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'LOG',
+              data: {}
+            }
+          });
+
+          socketSensorTemperature?.socket.write(Buffer.from(JSON.stringify(payload)));
+
+          break;
+        }
+        case 'LOG_UMIDADE': {
+
+          const socketSensorHumidity = findBySensorName('umidade');
+
+          const payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'LOG',
+              data: {}
+            }
+          });
+
+          socketSensorHumidity?.socket.write(Buffer.from(JSON.stringify(payload)));
+
+          break;
+        }
+        case 'LOG_CO2': {
+
+          const socketSensorCO2 = findBySensorName('co2');
+
+          const payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'LOG',
+              data: {}
+            }
+          });
+
+          socketSensorCO2?.socket.write(Buffer.from(JSON.stringify(payload)));
 
           break;
         }
