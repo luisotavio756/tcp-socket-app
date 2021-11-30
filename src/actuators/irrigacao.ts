@@ -32,6 +32,6 @@ client.connect(options, () => {
 
   setInterval(()=>{
     client.write(Buffer.from(JSON.stringify(payload)));
-  }, 1500);
+  }, 1000);
 });
 
