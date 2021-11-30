@@ -1,6 +1,5 @@
 import net from 'net';
 import { createISOMessage } from '../utils';
-
 const actuatorId = Date.now();
 
 const options: net.SocketConnectOpts = {
