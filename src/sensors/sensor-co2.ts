@@ -16,7 +16,7 @@ const options: net.SocketConnectOpts = {
 let details: ISensorDetails = {
   sensorId: sensorId,
   sensorName: "co2",
-  nivelCO2: 0,
+  nivelCO2: 1,
 };
 
 const client = new net.Socket();
@@ -100,7 +100,7 @@ client.on("data", (data) =>{
     } = parsedData.message.data as ISensorDetails;
 
     maxValue = valueMaxSensorCo2;
-  }
+  } 
 })
 
 client.on("close", () => {

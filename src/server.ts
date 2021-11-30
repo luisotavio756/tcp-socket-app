@@ -13,6 +13,8 @@ let lastestSensorLogs: Array<{
   socket: net.Socket;
 }> = [];
 
+let socketClient: null | net.Socket = null;
+
 function addSensor(socket: net.Socket, data: ISensorDetails): void {
   const newSensor = {
     sensorId: data.sensorId,
@@ -44,10 +46,16 @@ server.on('connection', (socket) => {
       const action = parsedData.message.action;
 
       switch (action) {
+        case 'SOCKET_CLIENT': {
+          socketClient = socket;
+
+          break;
+        }
         case 'SENSOR_DETAILS': {
           const sensorDetail: ISensorDetails = parsedData.message.data as ISensorDetails;
 
           addSensor(socket, sensorDetail);
+
           console.log(sensorDetail);
 
           break;
@@ -211,6 +219,63 @@ server.on('connection', (socket) => {
           } = parsedData.message.data as ISensorDetails;
 
           console.log(`The ${sensorName}-${sensorId} sensor is bigger than the limit\nActual value: ${nivelCO2}`);
+
+          break;
+        }
+        case 'LOG_TEMPERATURA': {
+          const latestLogSensor = findBySensorName('temperatura');
+
+          const payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'LOG',
+              data: latestLogSensor?.message ?
+                JSON.parse(latestLogSensor?.message) :
+                {
+                  info: 'You need start the sensor Temperatura to get its logs'
+                }
+            }
+          });
+
+          socketClient?.write(Buffer.from(JSON.stringify(payload)));
+
+          break;
+        }
+        case 'LOG_UMIDADE': {
+          const latestLogSensor = findBySensorName('umidade');
+
+          const payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'LOG',
+              data: latestLogSensor?.message ?
+                JSON.parse(latestLogSensor?.message) :
+                {
+                  info: 'You need start the sensor Umidade to get its logs'
+                }
+            }
+          });
+
+          socketClient?.write(Buffer.from(JSON.stringify(payload)));
+
+          break;
+        }
+        case 'LOG_CO2': {
+          const latestLogSensor = findBySensorName('co2');
+
+          const payload = createISOMessage({
+            emitter: 'Server',
+            message: {
+              action: 'LOG',
+              data: latestLogSensor?.message ?
+                JSON.parse(latestLogSensor?.message) :
+                {
+                  info: 'You need start the sensor CO² to get its logs'
+                }
+            }
+          });
+
+          socketClient?.write(Buffer.from(JSON.stringify(payload)));
 
           break;
         }

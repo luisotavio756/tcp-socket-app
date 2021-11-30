@@ -1,3 +1,4 @@
+import IISOMessage from './dtos/ISOMessage';
 import net from 'net';
 import readlineSync from 'readline-sync';
 import { createISOMessage } from './utils';
@@ -21,12 +22,12 @@ function showMenu({
   milliseconds
 }: IMenuParams) {
   setTimeout(() => {
-    menu();
+    actionsMenu();
   }, milliseconds)
 }
 
-function menu() {
-  
+function menu_parametros() {
+
   let valueMinSensorTemperature: string | number = readlineSync
     .question('\n\nHow is the min value from the temperature sensor?\n');
     valueMinSensorTemperature = parseInt(valueMinSensorTemperature, 10);
@@ -58,39 +59,59 @@ function menu() {
 
   client.write(Buffer.from(JSON.stringify(payload)));
 
- /*  const readLine = readlineSync
-    .question('\n\nHow do you want do?\n\n(\n\t1 - Ligar aquecedor Aquecedor\n\t2 - Injetar CO2\n\t3 - Irrigar\n\t4 - Resfriar\n\t5 - Fechar conexão\n)\n');
+}
+
+function actionsMenu() {
+
+  const readLine = readlineSync
+    .question('\n\nHow do you want do?\n\n(\n\t1 - LOG Temperatura\n\t2 - LOG Umidade\n\t3 - LOG CO2\n\t4 - Fechar conexão\n)\n');
+
+  let payload;
 
   switch (readLine) {
     case "1":
-     const payload = createISOMessage({
-        emitter: 'Actuator-Injetor',
+      payload = createISOMessage({
+        emitter: 'Client',
         message: {
-          action: 'LIGAR_INJETOR',
+          action: 'LOG_TEMPERATURA',
           data: {}
         }
       });
 
       client.write(Buffer.from(JSON.stringify(payload)));
+
       showMenu({ milliseconds: 2500 });
 
       break;
     case "2":
-      //TODO: disparar action para ligar actuator para injetar CO2
+      payload = createISOMessage({
+        emitter: 'Client',
+        message: {
+          action: 'LOG_UMIDADE',
+          data: {}
+        }
+      });
+
+      client.write(Buffer.from(JSON.stringify(payload)));
+
       showMenu({ milliseconds: 2500 });
 
       break;
     case "3":
-      //TODO: disparar action para ligar actuator para irrigar
+      payload = createISOMessage({
+        emitter: 'Client',
+        message: {
+          action: 'LOG_CO2',
+          data: {}
+        }
+      });
+
+      client.write(Buffer.from(JSON.stringify(payload)));
 
       showMenu({ milliseconds: 2500 });
+
       break;
     case "4":
-      //TODO: disparar action para ligar actuator para irrigar
-
-      showMenu({ milliseconds: 2500 });
-      break;
-    case "5":
       disconnect();
 
       break;
@@ -99,16 +120,37 @@ function menu() {
       showMenu({ milliseconds: 500 });
 
       break;
-  } */
+  }
 }
 
 client.on('end', function() {
   console.log('Requested an end to the TCP connection');
 });
 
-client.connect(options, () => {
-  console.log('TCP connection established with the server.');
+client.on('data', (data) => {
+  const serializedData = data.toString();
+  const parsedData: IISOMessage = JSON.parse(serializedData);
+
+  if (parsedData.message.action === 'LOG') {
+    console.log(parsedData.message.data);
+  }
 });
 
-showMenu({ milliseconds: 500 });
+client.connect(options, () => {
+  console.log('TCP connection established with the server.');
+
+  const payload = createISOMessage({
+    emitter: 'Client',
+    message: {
+      action: 'SOCKET_CLIENT',
+      data: {}
+    }
+  });
+
+  client.write(Buffer.from(JSON.stringify(payload)));
+
+  menu_parametros();
+  showMenu({ milliseconds: 500 });
+});
+
 
