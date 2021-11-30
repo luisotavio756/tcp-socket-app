@@ -1,0 +1,73 @@
+version: '3.7'
+services:
+  server:
+    build: .
+    tty: true
+    container_name: gerenciador
+    command: yarn server
+    network_mode: host
+  sensor-co2:
+    build: .
+    tty: true
+    container_name: sensor-co2
+    command: yarn sensor-co2
+    network_mode: host
+    depends_on:
+      - server
+  sensor-temperatura:
+    build: .
+    tty: true
+    container_name: sensor-temperatura
+    command: yarn sensor-temperatura
+    network_mode: host
+    depends_on:
+      - server
+      - sensor-co2
+  sensor-umidade:
+    build: .
+    tty: true
+    container_name: sensor-umidade
+    command: yarn sensor-umidade
+    network_mode: host
+    depends_on:
+      - server
+      - sensor-temperatura
+  atuador-aquecedor:
+    build: .
+    tty: true
+    container_name: atuador-aquecedor
+    command: yarn actuator-aquecedor
+    network_mode: host
+    depends_on:
+      - server
+      - sensor-temperatura
+  atuador-injetor:
+    build: .
+    tty: true
+    container_name: atuador-injetor
+    command: yarn actuator-injetor
+    network_mode: host
+    depends_on:
+      - server
+      - sensor-co2
+      - atuador-aquecedor
+  atuador-resfriador:
+    build: .
+    tty: true
+    container_name: atuador-resfriador
+    command: yarn actuator-resfriador
+    network_mode: host
+    depends_on:
+      - server
+      - sensor-temperatura
+      - atuador-injetor
+  atuador-irrigacao:
+    build: .
+    tty: true
+    container_name: atuador-irrigacao
+    command: yarn actuator-irrigacao
+    network_mode: host
+    depends_on:
+      - server
+      - sensor-umidade
+      - atuador-resfriador

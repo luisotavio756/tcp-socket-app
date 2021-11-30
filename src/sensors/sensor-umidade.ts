@@ -4,7 +4,6 @@ import ISensorDetails from '../dtos/ISensorDetais';
 import IISOMessage from '../dtos/ISOMessage';
 
 const sensorId = Date.now();
-let irrigacao = false;
 
 let maxValue: null | number = null;
 
@@ -59,11 +58,8 @@ function setStatusInterval(socket: net.Socket) {
 
       socket.write(buffer);
 
-      irrigacao = false;
       clearStatusInterval();
     } else {
-      irrigacao && incrementValue();
-
       const payload = createISOMessage({
         emitter: 'Sensor-Umidade',
         message: {

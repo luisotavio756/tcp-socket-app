@@ -4,8 +4,6 @@ import { createISOMessage } from '../utils';
 import IISOMessage from '../dtos/ISOMessage';
 
 const sensorId = Date.now();
-let aquecedor = false;
-let resfriador = false;
 
 let minValue: null | number = null;
 let maxValue: null | number = null;
@@ -69,8 +67,6 @@ function setStatusInterval(socket: net.Socket) {
 
       socket.write(buffer);
 
-      aquecedor = false;
-      resfriador = false;
       clearStatusInterval();
     } else {
       const payload = createISOMessage({
