@@ -179,46 +179,46 @@ server.on('connection', (socket) => {
           break;
         }
         case 'ALERT_SENSOR_TEMPERATURE_MAX_VALUE': {
-          const {
-            temperatura,
-            sensorName,
-            sensorId
-          } = parsedData.message.data as ISensorDetails;
+          const sensorDetail: ISensorDetails = parsedData.message.data as ISensorDetails;
 
-          console.log(`The ${sensorName}-${sensorId} sensor is bigger than the limit\nActual value: ${temperatura}`);
+          addSensor(socket, sensorDetail);
+
+          console.log(sensorDetail);
+
+          console.log(`The ${sensorDetail.sensorName}-${sensorDetail.sensorId} sensor is smaller than the limit\nActual value: ${sensorDetail.temperatura}`);
 
           break;
         }
         case 'ALERT_SENSOR_TEMPERATURE_MIN_VALUE': {
-          const {
-            temperatura,
-            sensorName,
-            sensorId
-          } = parsedData.message.data as ISensorDetails;
+          const sensorDetail: ISensorDetails = parsedData.message.data as ISensorDetails;
 
-          console.log(`The ${sensorName}-${sensorId} sensor is smaller than the limit\nActual value: ${temperatura}`);
+          addSensor(socket, sensorDetail);
+
+          console.log(sensorDetail);
+
+          console.log(`The ${sensorDetail.sensorName}-${sensorDetail.sensorId} sensor is smaller than the limit\nActual value: ${sensorDetail.temperatura}`);
 
           break;
         }
         case 'ALERT_SENSOR_HUMIDITY_MAX_VALUE': {
-          const {
-            umidade,
-            sensorName,
-            sensorId
-          } = parsedData.message.data as ISensorDetails;
+          const sensorDetail: ISensorDetails = parsedData.message.data as ISensorDetails;
 
-          console.log(`The ${sensorName}-${sensorId} sensor is bigger than the limit\nActual value: ${umidade}`);
+          addSensor(socket, sensorDetail);
+
+          console.log(sensorDetail);
+
+          console.log(`The ${sensorDetail.sensorName}-${sensorDetail.sensorId} sensor is bigger than the limit\nActual value: ${sensorDetail.umidade}`);
 
           break;
         }
         case 'ALERT_SENSOR_CO2_MAX_VALUE': {
-          const {
-            nivelCO2,
-            sensorName,
-            sensorId
-          } = parsedData.message.data as ISensorDetails;
+          const sensorDetail: ISensorDetails = parsedData.message.data as ISensorDetails;
 
-          console.log(`The ${sensorName}-${sensorId} sensor is bigger than the limit\nActual value: ${nivelCO2}`);
+          addSensor(socket, sensorDetail);
+
+          console.log(sensorDetail);
+
+          console.log(`The ${sensorDetail.sensorName}-${sensorDetail.sensorId} sensor is bigger than the limit\nActual value: ${sensorDetail.nivelCO2}`);
 
           break;
         }
