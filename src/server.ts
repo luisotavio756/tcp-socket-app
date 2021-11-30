@@ -56,6 +56,8 @@ server.on('connection', (socket) => {
 
           addSensor(socket, sensorDetail);
 
+          console.log(sensorDetail);
+
           break;
         }
         case 'LIGAR_AQUECEDOR': {
