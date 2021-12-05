@@ -1,13 +1,13 @@
 version: '3.7'
 services:
   server:
-    build: .
+    image: cristiano23lima/trabalho-redes:latest
     tty: true
     container_name: gerenciador
     command: yarn server
     network_mode: host
   sensor-co2:
-    build: .
+    image: cristiano23lima/trabalho-redes:latest
     tty: true
     container_name: sensor-co2
     command: yarn sensor-co2
@@ -15,7 +15,7 @@ services:
     depends_on:
       - server
   sensor-temperatura:
-    build: .
+    image: cristiano23lima/trabalho-redes:latest
     tty: true
     container_name: sensor-temperatura
     command: yarn sensor-temperatura
@@ -24,7 +24,7 @@ services:
       - server
       - sensor-co2
   sensor-umidade:
-    build: .
+    image: cristiano23lima/trabalho-redes:latest
     tty: true
     container_name: sensor-umidade
     command: yarn sensor-umidade
@@ -33,7 +33,7 @@ services:
       - server
       - sensor-temperatura
   atuador-aquecedor:
-    build: .
+    image: cristiano23lima/trabalho-redes:latest
     tty: true
     container_name: atuador-aquecedor
     command: yarn actuator-aquecedor
@@ -42,7 +42,7 @@ services:
       - server
       - sensor-temperatura
   atuador-injetor:
-    build: .
+    image: cristiano23lima/trabalho-redes:latest
     tty: true
     container_name: atuador-injetor
     command: yarn actuator-injetor
@@ -52,7 +52,7 @@ services:
       - sensor-co2
       - atuador-aquecedor
   atuador-resfriador:
-    build: .
+    image: cristiano23lima/trabalho-redes:latest
     tty: true
     container_name: atuador-resfriador
     command: yarn actuator-resfriador
@@ -62,7 +62,7 @@ services:
       - sensor-temperatura
       - atuador-injetor
   atuador-irrigacao:
-    build: .
+    image: cristiano23lima/trabalho-redes:latest
     tty: true
     container_name: atuador-irrigacao
     command: yarn actuator-irrigacao
