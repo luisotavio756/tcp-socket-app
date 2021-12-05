@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  server:
+  gerenciador:
     image: cristiano23lima/trabalho-redes:latest
     tty: true
     container_name: gerenciador
@@ -13,7 +13,7 @@ services:
     command: yarn sensor-co2
     network_mode: host
     depends_on:
-      - server
+      - gerenciador
   sensor-temperatura:
     image: cristiano23lima/trabalho-redes:latest
     tty: true
@@ -21,8 +21,7 @@ services:
     command: yarn sensor-temperatura
     network_mode: host
     depends_on:
-      - server
-      - sensor-co2
+      - gerenciador
   sensor-umidade:
     image: cristiano23lima/trabalho-redes:latest
     tty: true
@@ -30,8 +29,7 @@ services:
     command: yarn sensor-umidade
     network_mode: host
     depends_on:
-      - server
-      - sensor-temperatura
+      - gerenciador
   atuador-aquecedor:
     image: cristiano23lima/trabalho-redes:latest
     tty: true
@@ -39,7 +37,7 @@ services:
     command: yarn actuator-aquecedor
     network_mode: host
     depends_on:
-      - server
+      - gerenciador
       - sensor-temperatura
   atuador-injetor:
     image: cristiano23lima/trabalho-redes:latest
@@ -48,9 +46,8 @@ services:
     command: yarn actuator-injetor
     network_mode: host
     depends_on:
-      - server
+      - gerenciador
       - sensor-co2
-      - atuador-aquecedor
   atuador-resfriador:
     image: cristiano23lima/trabalho-redes:latest
     tty: true
@@ -58,9 +55,8 @@ services:
     command: yarn actuator-resfriador
     network_mode: host
     depends_on:
-      - server
+      - gerenciador
       - sensor-temperatura
-      - atuador-injetor
   atuador-irrigacao:
     image: cristiano23lima/trabalho-redes:latest
     tty: true
@@ -68,6 +64,16 @@ services:
     command: yarn actuator-irrigacao
     network_mode: host
     depends_on:
-      - server
+      - gerenciador
       - sensor-umidade
-      - atuador-resfriador
+  client:
+    image: cristiano23lima/trabalho-redes:latest
+    tty: true
+    container_name: client
+    command: yarn client
+    network_mode: host
+    depends_on:
+      - gerenciador
+      - sensor-umidade
+      - sensor-temperatura
+      - sensor-co2

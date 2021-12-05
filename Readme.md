@@ -26,11 +26,13 @@
 ### 2 - Caso queira executar o projeto com docker:
 
 ```bash
-# docker-compose -f docker-compose.yml up -d --build ( na pasta do projeto )
-# docker exec -it gerenciador bash ( aqui é para entrar no container do gerenciador e rodar o comando do client )
-# yarn client ( para startar o client, definindo os parâmetros máximos e mínimos dos sensores)
-# docker start atuador-aquecedor ( para aumentar a temperatura )
-# docker start atuador-resfriador ( para diminuir a temperatura )
-# docker start atuador-irrigacao ( para aumentar a umidade )
-# docker start atuador-injetor ( para aumentar o nível de  CO² )
+# docker-compose up -d gerenciador ( para iniciar o gerenciador )
+# docker-compose up -d sensor-temperatura ( para iniciar o sensor de temperatura )
+# docker-compose up -d sensor-umidade ( para iniciar o sensor de umidade)
+# docker-compose up -d sensor-co2 ( para iniciar o sensor de CO² )
+# docker-compose up client ( para iniciar o client )
+# docker-compose up -d atuador-aquecedor ( para iniciar o atuador de aquecedor )
+# docker-compose up -d atuador-resfriador ( para iniciar o atuador de resfriador )
+# docker-compose up -d atuador-irrigacao ( para iniciar o atuador de irrigação )
+# docker-compose up -d atuador-injetor ( para iniciar o atuador de injetor )
 ```
