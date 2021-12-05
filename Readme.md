@@ -27,10 +27,11 @@
 
 ```bash
 # docker-compose up -d gerenciador ( para iniciar o gerenciador )
+# docker logs -f gerenciador ( para ver os logs do servidor )
 # docker-compose up -d sensor-temperatura ( para iniciar o sensor de temperatura )
 # docker-compose up -d sensor-umidade ( para iniciar o sensor de umidade)
 # docker-compose up -d sensor-co2 ( para iniciar o sensor de CO² )
-# docker-compose up client ( para iniciar o client )
+# docker run --rm -it --name client --network host cristiano23lima/trabalho-redes:latest yarn client ( para iniciar o client )
 # docker-compose up -d atuador-aquecedor ( para iniciar o atuador de aquecedor )
 # docker-compose up -d atuador-resfriador ( para iniciar o atuador de resfriador )
 # docker-compose up -d atuador-irrigacao ( para iniciar o atuador de irrigação )
